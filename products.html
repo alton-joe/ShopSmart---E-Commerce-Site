@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Products ShopSmart</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+  <style>
+  
+    .product-card {
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .product-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .product-img {
+      height: 160px;
+      width: 90%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f9f9f9;
+    }
+
+    .product-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-body {
+      padding: 12px;
+      text-align: left;
+    }
+
+    .product-body h3 {
+      margin: 0;
+      font-size: 1rem;
+      color: #111;
+    }
+
+    .product-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .price {
+      font-weight: 700;
+      color: #111;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="index.html">ShopMart</a>
+  <nav class="nav-right">
+    <a href="products.html">Products</a>
+    <a href="cart.html" id="nav-cart-3">Cart (0)</a>
+    <a href="feedback.html">Reviews</a>
+    <a href="register.html">Sign in</a>
+  </nav>
+</header>
+
+<main class="container">
+  <h2>Products</h2>
+  <div class="product-grid" id="productGrid">
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>© ShopSmart — Demo</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  
+  const sampleProducts = [
+    {id:1, name:"Urban Headphones", price:2499, desc:"Comfortable wireless headphones with strong bass.", img:"images/UHP.webp"},
+    {id:2, name:"Smart Watch Plus", price:3299, desc:"Track fitness, calls & notifications in style.", img:"images/SWP.jpg"},
+    {id:3, name:"Compact Bluetooth Speaker", price:1799, desc:"Small size, big sound. Portable and loud.", img:"images/CBS.webp"},
+    {id:4, name:"EvoFox Mechanical Keyboard", price:4199, desc:"Tactile keys, RGB, built to type.", img:"images/GK.webp"}
+  ];
+
+  localStorage.setItem('shop_products', JSON.stringify(sampleProducts));
+
+  const grid = document.getElementById('productGrid');
+
+  function renderProducts(){
+    grid.innerHTML = '';
+    sampleProducts.forEach(p=>{
+      const card = document.createElement('article');
+      card.className = 'product-card';
+      card.innerHTML = `
+        <div class="product-img">
+          <img src="${p.img}" alt="${p.name}">
+        </div>
+        <div class="product-body">
+          <h3>${p.name}</h3>
+          <p class="muted">${p.desc}</p>
+          <div class="product-foot">
+            <div class="price">₹ ${p.price}</div>
+            <div class="btn-row">
+              <form action="product-details.html" method="get" class="inline-form">
+                <input type="hidden" name="id" value="${p.id}">
+                <button class="btn ghost" type="submit">View</button>
+              </form>
+              <button class="btn primary add-btn" data-id="${p.id}">Add to cart</button>
+            </div>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    document.querySelectorAll('.add-btn').forEach(b=>{
+      b.addEventListener('click', e=>{
+        const id = Number(e.target.dataset.id);
+        addToCartId(id,1);
+        showToast('Added to cart');
+        updateCartCount();
+      });
+    });
+  }
+
+  renderProducts();
+  updateCartCount();
+</script>
+</body>
+</html>

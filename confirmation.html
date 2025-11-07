@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Order Confirmation ShopSmart</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="index.html">ShopMart</a>
+  <nav class="nav-right">
+    <a href="products.html">Products</a>
+    <a href="cart.html">Cart</a>
+    <a href="feedback.html">Reviews</a>
+  </nav>
+</header>
+
+<main class="container small">
+  <h2>Thank you! Order placed.</h2>
+  <div class="card">
+    <p id="orderMsg">Loading order details…</p>
+    <div class="form-row">
+      <a class="btn primary" href="products.html">Continue shopping</a>
+      <a class="btn ghost" href="feedback.html">Leave a review</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>© ShopSmart — Demo</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  const order = JSON.parse(localStorage.getItem('last_order') || 'null');
+  const msg = document.getElementById('orderMsg');
+  if(order){
+    msg.innerHTML = `<strong>${escapeHtml(order.name)}</strong>, your order was placed on ${new Date(order.date).toLocaleString()}.<br>
+                     Shipping to: ${escapeHtml(order.address)}<br>
+                     Payment: ${escapeHtml(order.method)}<br>
+                     (Thank you for believing in us :)`;
+  } else {
+    msg.textContent = 'No recent order found. Your cart may be empty.';
+  }
+  updateCartCount();
+</script>
+</body>
+</html>

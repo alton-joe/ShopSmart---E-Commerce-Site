@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sign up/Login ShopSmart</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="index.html">ShopMart</a>
+    <nav class="nav-right">
+      <a href="products.html">Products</a>
+      <a href="cart.html" id="nav-cart-2">Cart (0)</a>
+      <a href="feedback.html">Reviews</a>
+    </nav>
+  </header>
+
+  <main class="container small">
+    <h2>Sign up / Login</h2>
+
+    <form id="registerForm" action="products.html" method="get" class="card">
+      <label>
+        Full name
+        <input type="text" name="fullname" required placeholder="Your name">
+      </label>
+      <label>
+        Email
+        <input type="email" name="email" required placeholder="you@example.com">
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" required minlength="6" placeholder="6+ chars">
+      </label>
+
+      <div class="form-row">
+        <button class="btn primary" type="submit">Create account</button>
+        <button id="guestBtn" class="btn ghost" type="button">Continue as Guest</button>
+      </div>
+    </form>
+
+    <p class="muted">Already have an account? Just use the form above.</p>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    const registerForm = document.getElementById('registerForm');
+    registerForm.addEventListener('submit', () => {
+      const fd = new FormData(registerForm);
+      const user = { name: fd.get('fullname'), email: fd.get('email')};
+      localStorage.setItem('shop_user', JSON.stringify(user));
+    });
+    document.getElementById('guestBtn').addEventListener('click', () => {
+      window.location.href = "products.html";
+    });
+  </script>
+</body>
+</html>

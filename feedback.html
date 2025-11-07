@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Reviews ShopSmart</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="index.html">ShopMart</a>
+  <nav class="nav-right">
+    <a href="products.html">Products</a>
+    <a href="cart.html">Cart</a>
+    <a href="register.html">Sign in</a>
+  </nav>
+</header>
+
+<main class="container">
+  <h2>Customer Reviews</h2>
+
+  <form id="reviewForm" action="feedback.html" method="post" class="card">
+    <label>
+      Name
+      <input name="rname" id="rname" placeholder="Your name" required>
+    </label>
+    <label>
+      Rating
+      <select name="rating" id="rating" required>
+        <option value="5">5 — Excellent</option>
+        <option value="4">4 — Good</option>
+        <option value="3">3 — Okay</option>
+        <option value="2">2 — Poor</option>
+        <option value="1">1 — Bad</option>
+      </select>
+    </label>
+    <label>
+      Review
+      <textarea id="reviewText" name="review" rows="4" placeholder="Tell others what you think" required></textarea>
+    </label>
+
+    <div class="form-row">
+      <button class="btn primary" type="submit">Submit review</button>
+      <button class="btn ghost" id="clearReviews" type="button">Clear all reviews</button>
+    </div>
+  </form>
+
+  <section id="reviewsList" class="card reviews-list">
+  
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>© ShopSmart — Demo</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  const form = document.getElementById('reviewForm');
+  const list = document.getElementById('reviewsList');
+
+  function loadReviews(){
+    const arr = JSON.parse(localStorage.getItem('shop_reviews') || '[]');
+    if(arr.length===0) list.innerHTML = '<p class="muted">No reviews yet — be the first.</p>';
+    else {
+      list.innerHTML = arr.map(r => `
+        <article class="review">
+          <div class="rev-head"><strong>${escapeHtml(r.name)}</strong> <span class="muted">• ${new Date(r.date).toLocaleString()}</span></div>
+          <div class="rev-body">Rating: ${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+          <p>${escapeHtml(r.text)}</p>
+        </article>
+      `).join('');
+    }
+  }
+
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault(); 
+    const name = document.getElementById('rname').value.trim();
+    const rating = Number(document.getElementById('rating').value);
+    const text = document.getElementById('reviewText').value.trim();
+    if(!name||!text) return;
+    const arr = JSON.parse(localStorage.getItem('shop_reviews') || '[]');
+    arr.unshift({name, rating, text, date: new Date().toISOString()});
+    localStorage.setItem('shop_reviews', JSON.stringify(arr));
+    form.reset();
+    loadReviews();
+    showToast('Thanks for your review!');
+  });
+
+  document.getElementById('clearReviews').addEventListener('click', ()=>{
+    if(confirm('Clear all reviews?')) {
+      localStorage.removeItem('shop_reviews');
+      loadReviews();
+    }
+  });
+
+  loadReviews();
+  updateCartCount();
+</script>
+</body>
+</html>

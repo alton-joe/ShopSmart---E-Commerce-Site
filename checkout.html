@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Checkout ShopSmart</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="index.html">ShopMart</a>
+  <nav class="nav-right">
+    <a href="products.html">Products</a>
+    <a href="cart.html">Cart</a>
+    <a href="feedback.html">Reviews</a>
+  </nav>
+</header>
+
+<main class="container small">
+  <h2>Checkout</h2>
+
+  <form id="checkoutForm" action="confirmation.html" method="get" class="card">
+    <label>
+      Full name
+      <input name="name" required placeholder="Name on order" />
+    </label>
+    <label>
+      Address
+      <input name="address" required placeholder="Street, city, pincode" />
+    </label>
+    <label>
+      Payment method
+      <select name="method" required>
+        <option value="card">Card</option>
+        <option value="upi">UPI</option>
+        <option value="cod">Cash on delivery</option>
+      </select>
+    </label>
+
+    <div class="form-row">
+      <button class="btn primary" type="submit">Pay now</button>
+      <a class="btn ghost" href="cart.html">Back to cart</a>
+    </div>
+  </form>
+
+  <div id="payAnim" style="display:none;" class="card centered">
+    <p class="muted">Processing payment…</p>
+    <div class="spinner"></div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>© ShopSmart — Demo</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  const form = document.getElementById('checkoutForm');
+  const anim = document.getElementById('payAnim');
+
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault(); 
+    const fd = new FormData(form);
+    const orderInfo = { name: fd.get('name'), address: fd.get('address'), method: fd.get('method'), date: new Date().toISOString() };
+    
+    form.style.display='none';
+    anim.style.display='block';
+    setTimeout(()=>{
+      
+      localStorage.setItem('last_order', JSON.stringify(orderInfo));
+      
+      localStorage.removeItem('shop_cart');
+      updateCartCount();
+      window.location.href = 'confirmation.html';
+    }, 1700);
+  });
+</script>
+</body>
+</html>

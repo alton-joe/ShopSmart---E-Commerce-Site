@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Product ShopSmart</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="index.html">ShopMart</a>
+  <nav class="nav-right">
+    <a href="products.html">Products</a>
+    <a href="cart.html" id="nav-cart-4">Cart (0)</a>
+    <a href="feedback.html">Reviews</a>
+  </nav>
+</header>
+
+<main class="container small">
+  <div id="detailsCard" class="card"></div>
+</main>
+
+<footer class="site-footer">
+  <p>© ShopSmart — Demo</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+
+  const params = new URLSearchParams(location.search);
+  const id = Number(params.get('id')) || 1;
+  const products = JSON.parse(localStorage.getItem('shop_products') || '[]');
+  const p = products.find(x=>x.id===id) || products[0];
+
+  const details = document.getElementById('detailsCard');
+  details.innerHTML = `
+    <div class="product-detail">
+      <div class="product-img" style="height:160px;background:${p.color}"><span class="img-label">${p.name.split(' ')[0]}</span></div>
+      <div class="pd-body">
+        <h2>${p.name}</h2>
+        <p>${p.desc}</p>
+        <div class="price">₹ ${p.price}</div>
+
+        <form id="addForm" action="cart.html" method="get" class="inline-form">
+          <label>
+            Quantity
+            <input id="qty" name="qty" type="number" value="1" min="1" />
+          </label>
+          <input type="hidden" name="pid" value="${p.id}" />
+          <div class="form-row">
+            <button class="btn primary" type="submit">Add & View Cart</button>
+            <button type="button" class="btn ghost" id="addContinue">Add & Continue</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+
+
+  document.getElementById('addContinue').addEventListener('click', ()=>{
+    const qty = Number(document.getElementById('qty').value) || 1;
+    addToCartId(p.id, qty);
+    showToast('Added to cart');
+    updateCartCount();
+  });
+
+  document.getElementById('addForm').addEventListener('submit', (ev)=>{
+    const qty = Number(document.getElementById('qty').value) || 1;
+    addToCartId(p.id, qty);
+    
+  });
+
+  updateCartCount();
+</script>
+</body>
+</html>
